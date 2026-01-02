@@ -25,6 +25,37 @@ def check_linux():
         print(f"   Текущая ОС: {sys.platform}")
         sys.exit(1)
 
+def download_scripty():
+    """Скачать scripty с GitHub Releases"""
+    github_tag = "v1.0.0-dev"
+    download_url = f"https://github.com/stastpru/scripty/releases/download/{github_tag}/scripty"
+    
+    try:
+        print(f"📥 Скачивание scripty (версия: {github_tag})...")
+        
+        # Пытаемся использовать requests, если доступен
+        try:
+            import requests
+            file_response = requests.get(download_url)
+            file_response.raise_for_status()
+            
+            with open("scripty", "wb") as f:
+                f.write(file_response.content)
+                
+        except ImportError:
+            # Альтернатива через curl, если requests не установлен
+            print("   Библиотека requests не найдена, использую curl...")
+            run_command(f"curl -L -o scripty {download_url}", 
+                       f"Скачивание через curl")
+        
+        print(f"✅ Файл 'scripty' версии {github_tag} успешно скачан")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Ошибка при скачивании: {e}")
+        print(f"   URL: {download_url}")
+        return False
+
 def main():
     # Проверка операционной системы
     check_linux()
@@ -33,13 +64,23 @@ def main():
     home_dir = Path.home()
     script_dir = Path(__file__).parent.absolute()
     
-    # 1. Копирование scripty в /usr/bin/scripty
+    # 0. Скачиваем scripty, если его нет
     source_script = script_dir / "scripty"
+    
+    if not source_script.exists():
+        print("📦 Файл 'scripty' не найден, пытаемся скачать...")
+        if not download_scripty():
+            print("❌ Не удалось скачать scripty. Установка прервана.")
+            sys.exit(1)
+    else:
+        print("✅ Файл 'scripty' уже существует, пропускаем скачивание")
+    
+    # 1. Копирование scripty в /usr/bin/scripty
     
     # Проверяем существует ли исходный файл
     if not source_script.exists():
-        print("⚠️  Файл 'scripty' не найден в текущей директории")
-        exit()
+        print("❌ Файл 'scripty' не найден в текущей директории")
+        sys.exit(1)
     
     run_command(f"sudo cp {source_script} /usr/bin/scripty", 
                 "Копирование scripty в /usr/bin/")
@@ -132,6 +173,7 @@ def main():
     
     print("\n" + "="*50)
     print("🎉 Установка завершена успешно!")
+    print(f"Установлена версия: v1.0.0-dev")
     print("Вы можете использовать команду 'scripty' в терминале")
     print("="*50)
 

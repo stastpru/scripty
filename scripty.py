@@ -157,7 +157,7 @@ if command == "help":
     print("init [template] - Инициализировать проект из примеров")
     print("run <action> - Запуск действия из scripty.yaml")
     print("modules list - модули(функционал в разработке, но работает)")
-    exit(0)
+    sys.exit(0)
 
 if not config:
     print("Конфиг не существует")
@@ -237,10 +237,10 @@ if command == "modules":
         print(f"\nЗагружено модулей: {len(modules)}")
         for prefix, module in modules.items():
             print(f" - {prefix}: {type(module).__name__}")
-    exit(0)
+    sys.exit(0)
 
 if modules.get(command):
     modules[command].run(args, config)
-    exit(0)
+    sys.exit(0)
 
 print("Команда не найдена!")
