@@ -1,7 +1,6 @@
 actions:
   install: pip install -r requirements.txt
   build: pyinstaller --onefile scripty.py
-  build installer: pyinstaller --onefile installer.py
   clear: rm -rf build scripty.spec
 name: Scripty
-version: v1.0.0-dev
+version: v1.0.1

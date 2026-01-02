@@ -6,6 +6,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
+github_tag = "v1.0.1"
+
 def run_command(cmd, description):
     """Выполнить команду и обработать ошибки"""
     print(f"🔧 {description}...")
@@ -27,7 +29,7 @@ def check_linux():
 
 def download_scripty():
     """Скачать scripty с GitHub Releases"""
-    github_tag = "v1.0.0-dev"
+    
     download_url = f"https://github.com/stastpru/scripty/releases/download/{github_tag}/scripty"
     
     try:
